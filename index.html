@@ -1,998 +1,134 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Web Yêu Thích Của Tôi</title>
-    <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(22, 30, 46, 0.7);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f3f4f6;
-            --text-sub: #9ca3af;
-            --input-bg: rgba(11, 15, 25, 0.6);
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --accent-color: #06b6d4;
-            --danger-color: #f43f5e;
-            --danger-hover: #e11d48;
-            --star-color: #f59e0b;
-        }
-
-        [data-theme="light"] {
-            --bg-color: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(0, 0, 0, 0.08);
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --input-bg: rgba(255, 255, 255, 0.9);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.1) 0px, transparent 50%);
-            color: var(--text-main);
-            padding: 2.5rem 1rem;
-            min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #38bdf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        header p {
-            color: var(--text-sub);
-            font-size: 1rem;
-        }
-
-        .top-utility-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            width: 100%;
-            flex: 1 1 100%;
-        }
-
-        .search-box input {
-            width: 100%;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .action-btns .btn-secondary {
-            flex: 1;
-            padding: 10px 4px;
-            font-size: 0.8rem;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: none;
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: none;
-        }
-
-        .controls-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .controls-wrapper {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .panel-box {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(12px);
-            padding: 1.25rem;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-        }
-
-        .panel-box h3 {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.85rem;
-            color: #38bdf8;
-            font-weight: 700;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        input, select, textarea {
-            padding: 12px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--card-border);
-            background-color: var(--input-bg);
-            color: var(--text-main);
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        textarea {
-            width: 100%;
-            height: 120px;
-            resize: vertical;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
-        }
-
-        .input-group input { flex: 1; min-width: 130px; }
-        .input-group select { min-width: 120px; }
-
-        button {
-            padding: 12px 20px;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
-            white-space: nowrap;
-        }
-
-        button:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);
-        }
-
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 12px;
-            margin-bottom: 1.5rem;
-            align-items: center;
-        }
-
-        .filter-item {
-            display: inline-flex;
-            align-items: center;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 30px;
-            padding: 3px 6px 3px 14px;
-            transition: all 0.2s;
-        }
-
-        .filter-item.active {
-            background: var(--primary-gradient);
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-        .filter-btn {
-            background: transparent;
-            color: var(--text-sub);
-            border: none;
-            padding: 6px 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            box-shadow: none;
-        }
-
-        .filter-item.active .filter-btn {
-            color: white;
-            font-weight: 700;
-        }
-
-        .btn-del-cat {
-            background: transparent;
-            border: none;
-            color: var(--text-sub);
-            font-size: 1.1rem;
-            cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 50%;
-            margin-left: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: none;
-        }
-
-        .filter-item.active .btn-del-cat {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .btn-del-cat:hover {
-            color: var(--danger-color) !important;
-            background-color: rgba(244, 63, 94, 0.2);
-        }
-
-        .bookmark-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .bookmark-grid.list-view {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .card:hover { 
-            transform: translateY(-4px);
-            border-color: rgba(168, 85, 247, 0.4);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-preview {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            background-color: rgba(11, 15, 25, 0.2);
-            display: block;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .card-body {
-            padding: 0.85rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-
-        .card-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 600;
-            overflow: hidden;
-            flex: 1;
-        }
-
-        .card-favicon {
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-
-        .card-title-box {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .card-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 0.95rem;
-        }
-
-        .card-clicks {
-            font-size: 0.72rem;
-            color: var(--text-sub);
-            font-weight: 400;
-        }
-
-        .card-tag {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(11, 15, 25, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--accent-color);
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            backdrop-filter: blur(8px);
-        }
-
-        .btn-pin {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(11, 15, 25, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            backdrop-filter: blur(8px);
-            box-shadow: none;
-            padding: 0;
-        }
-
-        .btn-pin.pinned {
-            color: var(--star-color);
-            border-color: var(--star-color);
-        }
-
-        .card-actions-btns {
-            display: flex;
-            gap: 2px;
-        }
-
-        .icon-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-sub);
-            font-size: 0.95rem;
-            cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 6px;
-            transition: all 0.2s;
-            box-shadow: none;
-        }
-
-        .icon-btn:hover {
-            color: var(--text-main);
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .icon-btn.btn-delete:hover {
-            color: var(--danger-color);
-            background-color: rgba(244, 63, 94, 0.15);
-        }
-
-        .list-view .card {
-            flex-direction: row;
-            align-items: center;
-            padding: 0.5rem 1rem;
-        }
-
-        .list-view .card-preview, 
-        .list-view .card-tag {
-            display: none;
-        }
-
-        .list-view .card-body {
-            width: 100%;
-            padding: 0;
-        }
-
-        .list-view .btn-pin {
-            position: static;
-            margin-right: 10px;
-            width: 26px;
-            height: 26px;
-        }
-
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            color: var(--text-sub);
-            font-style: italic;
-            padding: 3rem;
-            background: var(--card-bg);
-            border-radius: 16px;
-            border: 1px dashed var(--card-border);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(11, 15, 25, 0.8);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.25s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-box {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 1.75rem;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform: scale(0.9);
-            transition: transform 0.25s ease;
-        }
-
-        .modal-overlay.active .modal-box {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 0.75rem;
-        }
-
-        .modal-body {
-            font-size: 0.95rem;
-            color: var(--text-sub);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        .modal-body-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-
-        .btn-cancel {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-main);
-            box-shadow: none;
-        }
-
-        .btn-confirm {
-            background: var(--danger-color);
-            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #10b981;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            z-index: 10000;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>stttttttt</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #f4f4f9;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
+      text-align: center;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:active {
+      background-color: #0056b3;
+    }
+    .status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Trang Web Thường Dùng</h1>
-            <p>Quản lý, ghim và sắp xếp các liên kết yêu thích một cách thông minh</p>
-        </header>
+  <div class="card">
+    <h2>📱 App stttttttt Web Sync</h2>
+    
+    <label for="contentInput">Nội dung đồng bộ 2 chiều:</label>
+    <textarea id="contentInput" placeholder="Nhập nội dung ở đây..."></textarea>
+    
+    <button onclick="sendDataToFirebase()">Lưu & Đồng bộ ngay</button>
+    
+    <div id="statusText" class="status">Trạng thái: Đang kết nối...</div>
+  </div>
 
-        <div class="top-utility-bar">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm trang web...">
-            </div>
-            <div class="action-btns">
-                <button class="btn-secondary" id="btnToggleView" onclick="toggleView()" title="Đổi chế độ xem">📱 Grid</button>
-                <button class="btn-secondary" id="btnToggleTheme" onclick="toggleTheme()" title="Đổi giao diện">🌙 Dark</button>
-                <button class="btn-secondary" onclick="openExportModal()" title="Xuất dữ liệu">📤 Export</button>
-                <button class="btn-secondary" onclick="openImportModal()" title="Nhập dữ liệu">📥 Import</button>
-            </div>
-        </div>
+  <!-- 1. Nạp các thư viện Firebase SDK (CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-        <div class="controls-wrapper">
-            <div class="panel-box">
-                <h3>1. Tạo nhóm mới</h3>
-                <form class="input-group" id="categoryForm">
-                    <input type="text" id="categoryInput" placeholder="Tên nhóm..." required>
-                    <button type="submit">Tạo</button>
-                </form>
-            </div>
+  <script>
+    // 2. Cấu hình Firebase từ dự án twtd-847d4 của bạn
+    const firebaseConfig = {
+      apiKey: "AIzaSyAiP7Z2sUuk7batZauIW8rA4udQ1_yMaLs",
+      authDomain: "twtd-847d4.firebaseapp.com",
+      databaseURL: "https://twtd-847d4-default-rtdb.firebaseio.com",
+      projectId: "twtd-847d4",
+      storageBucket: "twtd-847d4.firebasestorage.app",
+      messagingSenderId: "568767871466",
+      appId: "1:568767871466:web:5423e4ec3387375b595a93",
+      measurementId: "G-P7GZNWF86L"
+    };
 
-            <div class="panel-box">
-                <h3>2. Thêm trang web</h3>
-                <form class="input-group" id="bookmarkForm">
-                    <input type="text" id="siteTitle" placeholder="Tên web..." required>
-                    <input type="text" id="siteUrl" placeholder="Địa chỉ URL (google.com)..." required>
-                    <select id="siteCategory"></select>
-                    <button type="submit">Thêm Web</button>
-                </form>
-            </div>
-        </div>
+    // 3. Khởi tạo Firebase & Realtime Database
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    const database = firebase.database();
 
-        <div class="filter-bar" id="filterBar"></div>
-        <div class="bookmark-grid" id="bookmarkGrid"></div>
-    </div>
+    const inputElement = document.getElementById('contentInput');
+    const statusElement = document.getElementById('statusText');
 
-    <!-- Modal Export Dữ Liệu -->
-    <div class="modal-overlay" id="exportModal">
-        <div class="modal-box">
-            <div class="modal-header">Sao lưu dữ liệu (Export)</div>
-            <div class="modal-body">
-                <p style="margin-bottom: 8px;">Sao chép chuỗi mã JSON bên dưới để cất giữ:</p>
-                <textarea id="exportJsonText" readonly></textarea>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeExportModal()">Đóng</button>
-                <button onclick="copyExportJson()">📋 Sao chép mã</button>
-            </div>
-        </div>
-    </div>
+    // ========================================================
+    // 4. HÀM GỬI DỮ LIỆU TỪ WEB/APP LÊN FIREBASE
+    // ========================================================
+    function sendDataToFirebase() {
+      const textValue = inputElement.value;
+      statusElement.innerText = "⏳ Đang đồng bộ...";
 
-    <!-- Modal Import Dữ Liệu (Đã khắc phục hoàn toàn lỗi không mở được tệp) -->
-    <div class="modal-overlay" id="importModal">
-        <div class="modal-box">
-            <div class="modal-header">Khôi phục dữ liệu (Import)</div>
-            <div class="modal-body">
-                <p style="margin-bottom: 8px;">Dán mã JSON khôi phục của bạn vào ô dưới đây:</p>
-                <textarea id="importJsonText" placeholder='Dán chuỗi JSON vào đây...'></textarea>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeImportModal()">Hủy</button>
-                <button onclick="submitImportJson()">📥 Khôi phục</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Xác Nhận Xóa -->
-    <div class="modal-overlay" id="confirmModal">
-        <div class="modal-box">
-            <div class="modal-header">Xác nhận xóa</div>
-            <div class="modal-body" id="modalMessage">
-                Bạn có chắc chắn muốn thực hiện hành động này?
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" id="btnCancelModal">Hủy</button>
-                <button class="btn-confirm" id="btnConfirmModal">Xóa</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Chỉnh Sửa Web -->
-    <div class="modal-overlay" id="editModal">
-        <div class="modal-box">
-            <div class="modal-header">Chỉnh sửa trang web</div>
-            <div class="modal-body">
-                <div class="modal-body-inputs">
-                    <input type="text" id="editTitleInput" placeholder="Tên web">
-                    <input type="text" id="editUrlInput" placeholder="Địa chỉ URL">
-                    <select id="editCategorySelect"></select>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeEditModal()">Hủy</button>
-                <button onclick="saveEditBookmark()">Lưu lại</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="toast" id="toast">Đã thực hiện thành công!</div>
-
-    <script>
-        const categoryForm = document.getElementById('categoryForm');
-        const categoryInput = document.getElementById('categoryInput');
-        const bookmarkForm = document.getElementById('bookmarkForm');
-        const siteTitleInput = document.getElementById('siteTitle');
-        const siteUrlInput = document.getElementById('siteUrl');
-        const siteCategorySelect = document.getElementById('siteCategory');
-        const filterBar = document.getElementById('filterBar');
-        const bookmarkGrid = document.getElementById('bookmarkGrid');
-        const searchInput = document.getElementById('searchInput');
-
-        const confirmModal = document.getElementById('confirmModal');
-        const modalMessage = document.getElementById('modalMessage');
-        const btnCancelModal = document.getElementById('btnCancelModal');
-        const btnConfirmModal = document.getElementById('btnConfirmModal');
-        const editModal = document.getElementById('editModal');
-        const editTitleInput = document.getElementById('editTitleInput');
-        const editUrlInput = document.getElementById('editUrlInput');
-        const editCategorySelect = document.getElementById('editCategorySelect');
-
-        const exportModal = document.getElementById('exportModal');
-        const exportJsonText = document.getElementById('exportJsonText');
-        const importModal = document.getElementById('importModal');
-        const importJsonText = document.getElementById('importJsonText');
-
-        let categoryToDelete = null;
-        let editingIndex = null;
-
-        let categories = JSON.parse(localStorage.getItem('my_categories')) || ['Mặc định', 'Công việc', 'Giải trí'];
-        let bookmarks = JSON.parse(localStorage.getItem('my_bookmarks')) || [
-            { title: 'YouTube', url: 'https://www.youtube.com', category: 'Giải trí', pinned: true, clicks: 0 },
-            { title: 'GitHub', url: 'https://github.com', category: 'Công việc', pinned: false, clicks: 0 }
-        ];
-        let currentTheme = localStorage.getItem('my_theme') || 'dark';
-        let currentView = localStorage.getItem('my_view') || 'grid';
-        let activeCategory = 'Tất cả';
-
-        function initApp() {
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('btnToggleTheme').innerText = currentTheme === 'dark' ? '🌙 Dark' : '☀️ Light';
-            
-            if (currentView === 'list') {
-                bookmarkGrid.classList.add('list-view');
-                document.getElementById('btnToggleView').innerText = '📄 List';
-            }
-
-            updateCategoryUI();
-            renderBookmarks();
-        }
-
-        function saveData() {
-            localStorage.setItem('my_categories', JSON.stringify(categories));
-            localStorage.setItem('my_bookmarks', JSON.stringify(bookmarks));
-        }
-
-        function showToast(text) {
-            const toast = document.getElementById('toast');
-            toast.innerText = text;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            localStorage.setItem('my_theme', currentTheme);
-            document.getElementById('btnToggleTheme').innerText = currentTheme === 'dark' ? '🌙 Dark' : '☀️ Light';
-        }
-
-        function toggleView() {
-            currentView = currentView === 'grid' ? 'list' : 'grid';
-            localStorage.setItem('my_view', currentView);
-            if (currentView === 'list') {
-                bookmarkGrid.classList.add('list-view');
-                document.getElementById('btnToggleView').innerText = '📄 List';
-            } else {
-                bookmarkGrid.classList.remove('list-view');
-                document.getElementById('btnToggleView').innerText = '📱 Grid';
-            }
-        }
-
-        function formatUrl(inputUrl) {
-            let cleanUrl = inputUrl.trim();
-            if (cleanUrl.startsWith('http://')) {
-                cleanUrl = cleanUrl.replace('http://', 'https://');
-            } else if (!cleanUrl.startsWith('https://')) {
-                cleanUrl = 'https://' + cleanUrl;
-            }
-            return cleanUrl;
-        }
-
-        function getScreenshotUrl(url) {
-            return `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`;
-        }
-
-        function getFaviconUrl(url) {
-            try {
-                const domain = new URL(url).hostname;
-                return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-            } catch (e) {
-                return '';
-            }
-        }
-
-        function handleCardClick(index) {
-            bookmarks[index].clicks = (bookmarks[index].clicks || 0) + 1;
-            saveData();
-            renderBookmarks();
-        }
-
-        function togglePin(index, event) {
-            event.stopPropagation();
-            bookmarks[index].pinned = !bookmarks[index].pinned;
-            saveData();
-            renderBookmarks();
-        }
-
-        function updateCategoryUI() {
-            siteCategorySelect.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-            editCategorySelect.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-
-            const filterList = ['Tất cả', ...categories];
-            filterBar.innerHTML = filterList.map(cat => {
-                const isActive = cat === activeCategory;
-                const canDelete = cat !== 'Tất cả' && cat !== 'Mặc định';
-
-                return `
-                    <div class="filter-item ${isActive ? 'active' : ''}">
-                        <button class="filter-btn" onclick="setFilter('${cat}')">${cat}</button>
-                        ${canDelete ? `<button class="btn-del-cat" onclick="openDeleteModal('${cat}')" title="Xóa nhóm">&times;</button>` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function setFilter(cat) {
-            activeCategory = cat;
-            updateCategoryUI();
-            renderBookmarks();
-        }
-
-        function openDeleteModal(catName) {
-            categoryToDelete = catName;
-            modalMessage.innerText = `Bạn có chắc muốn xóa nhóm "${catName}"? Các trang web sẽ chuyển sang "Mặc định".`;
-            confirmModal.classList.add('active');
-        }
-
-        function closeModal() {
-            confirmModal.classList.remove('active');
-            categoryToDelete = null;
-        }
-
-        btnCancelModal.addEventListener('click', closeModal);
-
-        btnConfirmModal.addEventListener('click', () => {
-            if (categoryToDelete) {
-                categories = categories.filter(c => c !== categoryToDelete);
-                bookmarks.forEach(b => {
-                    if (b.category === categoryToDelete) b.category = 'Mặc định';
-                });
-                if (activeCategory === categoryToDelete) activeCategory = 'Tất cả';
-                saveData();
-                updateCategoryUI();
-                renderBookmarks();
-                closeModal();
-            }
+      database.ref('shared_data/text').set(textValue)
+        .then(() => {
+          statusElement.innerText = "✅ Đã lưu và đồng bộ thành công!";
+        })
+        .catch((error) => {
+          console.error("Lỗi:", error);
+          statusElement.innerText = "❌ Lỗi đồng bộ: " + error.message;
         });
+    }
 
-        function openEditModal(index) {
-            editingIndex = index;
-            const item = bookmarks[index];
-            editTitleInput.value = item.title;
-            editUrlInput.value = item.url;
-            editCategorySelect.value = item.category || 'Mặc định';
-            editModal.classList.add('active');
-        }
+    // ========================================================
+    // 5. TỰ ĐỘNG LẮNG NGHE DỮ LIỆU TỪ FIREBASE (2 CHIỀU REALTIME)
+    // ========================================================
+    // Bất kỳ thay đổi nào từ phía Web hoặc App khác sẽ tự làm mới khung nhập ngay lập tức
+    database.ref('shared_data/text').on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data !== null) {
+        inputElement.value = data;
+        statusElement.innerText = "🔄 Đã cập nhật dữ liệu mới nhất!";
+      } else {
+        statusElement.innerText = "🟢 Sẵn sàng";
+      }
+    });
+  </script>
 
-        function closeEditModal() {
-            editModal.classList.remove('active');
-            editingIndex = null;
-        }
-
-        function saveEditBookmark() {
-            if (editingIndex !== null) {
-                bookmarks[editingIndex].title = editTitleInput.value.trim();
-                bookmarks[editingIndex].url = formatUrl(editUrlInput.value);
-                bookmarks[editingIndex].category = editCategorySelect.value;
-                saveData();
-                renderBookmarks();
-                closeEditModal();
-            }
-        }
-
-        function copyUrl(url) {
-            navigator.clipboard.writeText(url).then(() => {
-                showToast('Đã chép liên kết!');
-            });
-        }
-
-        /* EMBED EXPORT / IMPORT MODALS */
-        function openExportModal() {
-            const data = { categories, bookmarks };
-            exportJsonText.value = JSON.stringify(data, null, 2);
-            exportModal.classList.add('active');
-        }
-
-        function closeExportModal() {
-            exportModal.classList.remove('active');
-        }
-
-        function copyExportJson() {
-            exportJsonText.select();
-            navigator.clipboard.writeText(exportJsonText.value).then(() => {
-                showToast('Đã sao chép mã dữ liệu!');
-                closeExportModal();
-            });
-        }
-
-        function openImportModal() {
-            importJsonText.value = '';
-            importModal.classList.add('active');
-        }
-
-        function closeImportModal() {
-            importModal.classList.remove('active');
-        }
-
-        function submitImportJson() {
-            const rawJson = importJsonText.value.trim();
-            if (!rawJson) return;
-            try {
-                const data = JSON.parse(rawJson);
-                if (data.categories && data.bookmarks) {
-                    categories = data.categories;
-                    bookmarks = data.bookmarks;
-                    saveData();
-                    updateCategoryUI();
-                    renderBookmarks();
-                    showToast('Đã khôi phục dữ liệu!');
-                    closeImportModal();
-                } else {
-                    alert('Cấu trúc mã JSON không đúng!');
-                }
-            } catch (e) {
-                alert('Mã JSON không hợp lệ, vui lòng kiểm tra lại!');
-            }
-        }
-
-        searchInput.addEventListener('input', renderBookmarks);
-
-        function renderBookmarks() {
-            bookmarkGrid.innerHTML = '';
-            const keyword = searchInput.value.toLowerCase().trim();
-
-            let filteredList = bookmarks.map((item, originalIndex) => ({ ...item, originalIndex }))
-                .filter(b => {
-                    const matchCategory = (activeCategory === 'Tất cả' || b.category === activeCategory);
-                    const matchKeyword = b.title.toLowerCase().includes(keyword) || b.url.toLowerCase().includes(keyword);
-                    return matchCategory && matchKeyword;
-                });
-
-            filteredList.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
-
-            if (filteredList.length === 0) {
-                bookmarkGrid.innerHTML = '<div class="empty-state">Không tìm thấy trang web nào!</div>';
-                return;
-            }
-
-            filteredList.forEach((item) => {
-                const realIndex = item.originalIndex;
-                const card = document.createElement('div');
-                card.className = 'card';
-
-                const previewUrl = getScreenshotUrl(item.url);
-                const faviconUrl = getFaviconUrl(item.url);
-
-                card.innerHTML = `
-                    <span class="card-tag">${item.category || 'Mặc định'}</span>
-                    <button class="btn-pin ${item.pinned ? 'pinned' : ''}" onclick="togglePin(${realIndex}, event)" title="${item.pinned ? 'Bỏ ghim' : 'Ghim lên đầu'}">★</button>
-                    <a href="${item.url}" target="_self" onclick="handleCardClick(${realIndex})">
-                        <img class="card-preview" src="${previewUrl}" alt="${item.title}" loading="lazy" 
-                             onerror="this.src='https://via.placeholder.com/300x140/161e2e/ffffff?text=No+Preview'">
-                    </a>
-                    <div class="card-body">
-                        <a href="${item.url}" target="_self" class="card-info" onclick="handleCardClick(${realIndex})" title="${item.title}">
-                            <img class="card-favicon" src="${faviconUrl}" alt="" onerror="this.style.display='none'">
-                            <div class="card-title-box">
-                                <span class="card-title">${item.title}</span>
-                                <span class="card-clicks">Đã mở: ${item.clicks || 0} lần</span>
-                            </div>
-                        </a>
-                        <div class="card-actions-btns">
-                            <button class="icon-btn" onclick="copyUrl('${item.url}')" title="Sao chép URL">📋</button>
-                            <button class="icon-btn" onclick="openEditModal(${realIndex})" title="Chỉnh sửa">✏️</button>
-                            <button class="icon-btn btn-delete" onclick="deleteBookmark(${realIndex})" title="Xóa">&times;</button>
-                        </div>
-                    </div>
-                `;
-
-                bookmarkGrid.appendChild(card);
-            });
-        }
-
-        categoryForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newCat = categoryInput.value.trim();
-            if (newCat && !categories.includes(newCat)) {
-                categories.push(newCat);
-                saveData();
-                updateCategoryUI();
-                siteCategorySelect.value = newCat;
-                categoryInput.value = '';
-            }
-        });
-
-        bookmarkForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const rawUrl = siteUrlInput.value;
-            const title = siteTitleInput.value.trim();
-            const category = siteCategorySelect.value;
-
-            const url = formatUrl(rawUrl);
-
-            bookmarks.push({ title, url, category, pinned: false, clicks: 0 });
-            saveData();
-            renderBookmarks();
-
-            siteTitleInput.value = '';
-            siteUrlInput.value = '';
-        });
-
-        function deleteBookmark(index) {
-            bookmarks.splice(index, 1);
-            saveData();
-            renderBookmarks();
-        }
-
-        initApp();
-    </script>
 </body>
 </html>

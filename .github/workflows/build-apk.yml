@@ -1,0 +1,274 @@
+name: Build App twtd
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+      # ==========================================
+      # 1. Lấy source code
+      # ==========================================
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+
+      # ==========================================
+      # 2. Cài Node.js
+      # ==========================================
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+
+      # ==========================================
+      # 3. Cài Java 17
+      # ==========================================
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+
+
+      # ==========================================
+      # 4. Kiểm tra icon
+      # ==========================================
+      - name: Check App Icon
+        run: |
+          echo "===== Kiểm tra icon ====="
+
+          if [ ! -f "icon.png" ]; then
+            echo "❌ KHÔNG TÌM THẤY icon.png"
+            echo "Hãy đặt icon.png ở thư mục gốc repository."
+            exit 1
+          fi
+
+          file icon.png
+          ls -lh icon.png
+
+          echo "✅ Đã tìm thấy icon.png"
+
+
+      # ==========================================
+      # 5. Tạo thư mục Web
+      # ==========================================
+      - name: Prepare Web Directory
+        run: |
+          mkdir -p www
+
+          # Copy HTML
+          cp *.html www/ 2>/dev/null || true
+
+          # Copy CSS
+          cp *.css www/ 2>/dev/null || true
+
+          # Copy JS
+          cp *.js www/ 2>/dev/null || true
+
+          # Copy icon cho website
+          cp icon.png www/icon.png
+
+          echo "===== Nội dung www ====="
+          ls -lah www
+
+
+      # ==========================================
+      # 6. Tạo Node Project
+      # ==========================================
+      - name: Initialize Node Project
+        run: |
+          npm init -y
+
+          npm install \
+            @capacitor/core@5.7.0 \
+            @capacitor/cli@5.7.0 \
+            @capacitor/android@5.7.0
+
+
+      # ==========================================
+      # 7. Tạo Capacitor Config
+      # ==========================================
+      - name: Create Capacitor Config
+        run: |
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.twtd.app",
+            "appName": "Trang Web Thường Dùng",
+            "webDir": "www",
+            "server": {
+              "url": "https://twtd.anh.gt.tc/",
+              "cleartext": true
+            }
+          }
+          EOF
+
+          echo "===== capacitor.config.json ====="
+          cat capacitor.config.json
+
+
+      # ==========================================
+      # 8. Tạo Android Project
+      # ==========================================
+      - name: Add Android Platform
+        run: |
+          npx cap add android
+          npx cap sync android
+
+
+      # ==========================================
+      # 9. Gắn ICON trực tiếp vào Android
+      # ==========================================
+      - name: Install Android Icon
+        run: |
+          echo "===== Cài icon stttttttt ====="
+
+          mkdir -p android/app/src/main/res/drawable
+
+          cp icon.png \
+            android/app/src/main/res/drawable/app_icon.png
+
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+
+          sed -i \
+            's|android:icon="@mipmap/ic_launcher"|android:icon="@drawable/app_icon"|g' \
+            "$MANIFEST"
+
+          sed -i \
+            's|android:roundIcon="@mipmap/ic_launcher_round"|android:roundIcon="@drawable/app_icon"|g' \
+            "$MANIFEST"
+
+          sed -i \
+            's|android:label="@string/app_name"|android:label="stttttttt"|g' \
+            "$MANIFEST"
+
+          if ! grep -q 'android:icon=' "$MANIFEST"; then
+            sed -i \
+              's|<application|<application android:icon="@drawable/app_icon"|' \
+              "$MANIFEST"
+          fi
+
+
+      # ==========================================
+      # 10. Cấu hình tên app
+      # ==========================================
+      - name: Set App Name
+        run: |
+          STRINGS="android/app/src/main/res/values/strings.xml"
+
+          if [ -f "$STRINGS" ]; then
+            sed -i \
+              's|<string name="app_name">.*</string>|<string name="app_name">Trang Web Thường Dùng</string>|g' \
+              "$STRINGS"
+          else
+            mkdir -p android/app/src/main/res/values
+            cat > "$STRINGS" <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">stttttttt</string>
+          </resources>
+          EOF
+          fi
+
+
+      # ==========================================
+      # 11. Cấu hình Android / Gradle
+      # ==========================================
+      - name: Configure Android
+        run: |
+          cd android
+
+          echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" >> gradle.properties
+          echo "android.useAndroidX=true" >> gradle.properties
+          echo "android.enableJetifier=true" >> gradle.properties
+
+          if [ -f "variables.gradle" ]; then
+            sed -i \
+              's/minSdkVersion = .*/minSdkVersion = 22/' \
+              variables.gradle
+          fi
+
+
+      # ==========================================
+      # 12. Build APK
+      # ==========================================
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+
+      # ==========================================
+      # 13. Đổi tên APK
+      # ==========================================
+      - name: Rename APK
+        run: |
+          mkdir -p output
+          cp \
+            android/app/build/outputs/apk/debug/app-debug.apk \
+            output/twtd.apk
+
+
+      # ==========================================
+      # 14. Kiểm tra APK
+      # ==========================================
+      - name: Check Final APK
+        run: |
+          if [ ! -f "output/twtd.apk" ]; then
+            echo "❌ Không tìm thấy stttttttt.apk"
+            exit 1
+          fi
+
+          echo "✅ Build thành công!"
+          echo "📱 Tên: Trang Web Thường Dùng"
+          echo "📦 APK:"
+          ls -lh output/twtd.apk
+
+
+      # ==========================================
+      # 15. Tạo Release Tag
+      # ==========================================
+      - name: Create Release Tag
+        id: tag
+        run: |
+          echo "TAG_NAME=v1.0.$(date +%s)" >> "$GITHUB_ENV"
+
+
+      # ==========================================
+      # 16. Tạo GitHub Release
+      # ==========================================
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: output/stttttttt.apk
+          tag_name: ${{ env.TAG_NAME }}
+          name: stttttttt ${{ env.TAG_NAME }}
+          body: |
+            # 🚀 stttttttt
+
+            APK được build tự động bằng GitHub Actions.
+
+            ## Thông tin
+
+            - 📱 App: Trang Web Thường Dùng
+            - 🎨 Icon: icon.png
+            - 📦 Android APK
+            - 🌐 Website: https://twtd.anh.gt.tc/
+
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          

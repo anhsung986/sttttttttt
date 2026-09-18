@@ -238,7 +238,17 @@ jobs:
 
 
       # ==========================================
-      # 15. Tạo Release Tag
+      # 15. Nén mã nguồn Web (Dùng cho Auto Update)
+      # ==========================================
+      - name: Create Web Code Bundle
+        run: |
+          cd www
+          zip -r ../output/dist.zip .
+          cd ..
+
+
+      # ==========================================
+      # 16. Tạo Release Tag
       # ==========================================
       - name: Create Release Tag
         id: tag
@@ -247,24 +257,26 @@ jobs:
 
 
       # ==========================================
-      # 16. Tạo GitHub Release
+      # 17. Tạo GitHub Release
       # ==========================================
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: output/twtd.apk
+          files: |
+            output/twtd.apk
+            output/dist.zip
           tag_name: ${{ env.TAG_NAME }}
           name: Trang Web Thường Dùng ${{ env.TAG_NAME }}
           body: |
             # 🚀 Trang Web Thường Dùng
 
-            APK được build tự động bằng GitHub Actions.
+            Tự động build và phát hành bằng GitHub Actions.
 
-            ## Thông tin
+            ## Dữ liệu đóng gói
 
-            - 📱 App: Trang Web Thường Dùng
+            - 📱 App APK: twtd.apk
+            - 🌐 Code Bundle: dist.zip (Tự động sync giao diện mới)
             - 🎨 Icon: icon.png
-            - 📦 Android APK
             - 🌐 Website: https://twtd.anh.gt.tc/
 
           draft: false

@@ -51,6 +51,12 @@
     button:active {
       background-color: #0056b3;
     }
+    .btn-danger {
+      background-color: #dc3545;
+    }
+    .btn-danger:active {
+      background-color: #bd2130;
+    }
     .status {
       margin-top: 10px;
       font-size: 13px;
@@ -68,6 +74,7 @@
     <textarea id="contentInput" placeholder="Nhập nội dung ở đây..."></textarea>
     
     <button onclick="sendDataToFirebase()">Lưu & Đồng bộ ngay</button>
+    <button class="btn-danger" onclick="deleteDataFromFirebase()">Xóa dữ liệu đồng bộ</button>
     
     <div id="statusText" class="status">Trạng thái: Đang kết nối...</div>
   </div>
@@ -78,7 +85,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <script>
-    // 2. Cấu hình Firebase từ dự án twtd-847d4 của bạn
+    // 2. Cấu hình Firebase từ dự án twtd-847d4[span_0](start_span)[span_0](end_span)
     const firebaseConfig = {
       apiKey: "AIzaSyAiP7Z2sUuk7batZauIW8rA4udQ1_yMaLs",
       authDomain: "twtd-847d4.firebaseapp.com",
@@ -90,7 +97,7 @@
       measurementId: "G-P7GZNWF86L"
     };
 
-    // 3. Khởi tạo Firebase & Realtime Database
+    // 3. Khởi tạo Firebase & Realtime Database[span_1](start_span)[span_1](end_span)
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
     const database = firebase.database();
@@ -99,7 +106,7 @@
     const statusElement = document.getElementById('statusText');
 
     // ========================================================
-    // 4. HÀM GỬI DỮ LIỆU TỪ WEB/APP LÊN FIREBASE
+    // 4. HÀM GỬI & XÓA DỮ LIỆU ĐỒNG BỘ
     // ========================================================
     function sendDataToFirebase() {
       const textValue = inputElement.value;
@@ -115,19 +122,61 @@
         });
     }
 
+    function deleteDataFromFirebase() {
+      if (confirm("Bạn có chắc chắn muốn xóa sạch dữ liệu đồng bộ không?")) {
+        statusElement.innerText = "⏳ Đang xóa...";
+        database.ref('shared_data/text').remove()
+          .then(() => {
+            statusElement.innerText = "🗑️ Đã xóa dữ liệu đồng bộ!";
+          })
+          .catch((error) => {
+            statusElement.innerText = "❌ Lỗi khi xóa: " + error.message;
+          });
+      }
+    }
+
     // ========================================================
-    // 5. TỰ ĐỘNG LẮNG NGHE DỮ LIỆU TỪ FIREBASE (2 CHIỀU REALTIME)
+    // 5. TỰ ĐỘNG LẮNG NGHE DỮ LIỆU TỪ FIREBASE (SỬA & XÓA TỰ ĐỘNG)
     // ========================================================
-    // Bất kỳ thay đổi nào từ phía Web hoặc App khác sẽ tự làm mới khung nhập ngay lập tức
     database.ref('shared_data/text').on('value', (snapshot) => {
       const data = snapshot.val();
-      if (data !== null) {
-        inputElement.value = data;
+      
+      // Nếu dữ liệu bị xóa hoặc rỗng, tự xóa nội dung ở ô nhập
+      inputElement.value = data ? data : "";
+      
+      if (data) {
         statusElement.innerText = "🔄 Đã cập nhật dữ liệu mới nhất!";
       } else {
-        statusElement.innerText = "🟢 Sẵn sàng";
+        statusElement.innerText = "🟢 Dữ liệu trống / Đã xóa";
       }
     });
+
+    // ========================================================
+    // 6. TỰ ĐỘNG KIỂM TRA BẢN RELEASE MỚI TỪ GITHUB ĐỂ ĐỒNG BỘ CODE
+    // ========================================================
+    const GITHUB_USERNAME = "anhsung986";
+    const REPO_NAME = "stttttttt";
+
+    async function checkGitHubReleaseUpdate() {
+      try {
+        const res = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/releases/latest`);
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const latestTag = data.tag_name;
+        const currentTag = localStorage.getItem('app_version');
+
+        if (latestTag && latestTag !== currentTag) {
+          localStorage.setItem('app_version', latestTag);
+          // Tự làm mới trang để nạp code mới nhất từ CDN/Web View
+          window.location.reload(true);
+        }
+      } catch (e) {
+        console.log("Kiểm tra bản cập nhật thất bại:", e);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", checkGitHubReleaseUpdate);
   </script>
 
 </body>

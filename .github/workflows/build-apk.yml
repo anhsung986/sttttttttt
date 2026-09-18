@@ -132,7 +132,7 @@ jobs:
       # ==========================================
       - name: Install Android Icon
         run: |
-          echo "===== Cài icon stttttttt ====="
+          echo "===== Cài icon twtd ====="
 
           mkdir -p android/app/src/main/res/drawable
 
@@ -150,7 +150,7 @@ jobs:
             "$MANIFEST"
 
           sed -i \
-            's|android:label="@string/app_name"|android:label="stttttttt"|g' \
+            's|android:label="@string/app_name"|android:label="twtd"|g' \
             "$MANIFEST"
 
           if ! grep -q 'android:icon=' "$MANIFEST"; then
@@ -176,7 +176,7 @@ jobs:
             cat > "$STRINGS" <<'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
-              <string name="app_name">stttttttt</string>
+              <string name="app_name">twtd</string>
           </resources>
           EOF
           fi
@@ -227,7 +227,7 @@ jobs:
       - name: Check Final APK
         run: |
           if [ ! -f "output/twtd.apk" ]; then
-            echo "❌ Không tìm thấy stttttttt.apk"
+            echo "❌ Không tìm thấy twtd.apk"
             exit 1
           fi
 
@@ -252,11 +252,11 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: output/stttttttt.apk
+          files: output/twtd.apk
           tag_name: ${{ env.TAG_NAME }}
-          name: stttttttt ${{ env.TAG_NAME }}
+          name: Trang Web Thường Dùng ${{ env.TAG_NAME }}
           body: |
-            # 🚀 stttttttt
+            # 🚀 Trang Web Thường Dùng
 
             APK được build tự động bằng GitHub Actions.
 

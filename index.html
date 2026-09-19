@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Trang Web Thường Dùng</title>
+  
+  <!-- Thư viện Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <style>
     :root {
       --bg-color: #0b0f19;
@@ -52,6 +57,8 @@
     .header h1 { color: #6366f1; font-size: 20px; font-weight: 700; margin-bottom: 2px; }
     .header p { color: var(--text-muted); font-size: 11px; }
 
+    .sync-status { text-align: center; font-size: 10px; color: #10b981; margin-bottom: 8px; font-weight: 600; }
+
     .search-box { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); margin-bottom: 10px; font-size: 13px; outline: none; }
     .toolbar { display: flex; gap: 6px; margin-bottom: 12px; }
     .btn-tool { flex: 1; padding: 8px 4px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; }
@@ -95,7 +102,7 @@
     .btn-icon { cursor: pointer; font-size: 13px; opacity: 0.85; user-select: none; }
     .btn-delete { color: #94a3b8; }
 
-    /* CSS Giao diện LIST (Thắt gọn) */
+    /* CSS Giao diện LIST */
     .items-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
     .list-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .list-left { display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden; text-decoration: none; color: var(--text-color); }
@@ -129,6 +136,8 @@
     <h1>Trang Web Thường Dùng</h1>
     <p>Quản lý, ghim và sắp xếp các liên kết yêu thích một cách thông minh</p>
   </div>
+
+  <div id="syncStatus" class="sync-status">🔄 Đang kết nối Firebase...</div>
 
   <input type="text" id="searchInput" class="search-box" placeholder="🔍 Tìm kiếm trang web..." oninput="render()">
 
@@ -226,7 +235,22 @@
   </div>
 
   <script>
-    // Mặc định luôn là darkMode = true
+    // 1. Khởi tạo Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAiP7Z2sUuk7batZauIW8rA4udQ1_yMaLs",
+      authDomain: "twtd-847d4.firebaseapp.com",
+      databaseURL: "https://twtd-847d4-default-rtdb.firebaseio.com",
+      projectId: "twtd-847d4",
+      storageBucket: "twtd-847d4.firebasestorage.app",
+      messagingSenderId: "568767871466",
+      appId: "1:568767871466:web:5423e4ec3387375b595a93",
+      measurementId: "G-P7GZNWF86L"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const dbRef = db.ref('appData');
+
     const defaultData = {
       categories: ["Mặc định", "Công việc", "Giải trí", "Cá nhân"],
       activeCategory: "Tất cả",
@@ -234,34 +258,36 @@
       darkMode: true,
       bookmarks: [
         { id: 1, name: "YouTube", url: "https://youtube.com", category: "Giải trí", clicks: 2, starred: true },
-        { id: 2, name: "GitHub", url: "https://github.com", category: "Công việc", clicks: 1, starred: true },
-        { id: 3, name: "Google", url: "https://google.com", category: "Mặc định", clicks: 0, starred: true }
+        { id: 2, name: "GitHub", url: "https://github.com", category: "Công việc", clicks: 1, starred: true }
       ]
     };
 
-    let stored = localStorage.getItem('twtd_store');
     let appData = defaultData;
-
-    if (stored) {
-      try {
-        let parsed = JSON.parse(stored);
-        if (parsed && parsed.categories && parsed.categories.length > 0) {
-          appData = parsed;
-        }
-      } catch(e) {}
-    }
-
-    if (appData.darkMode === undefined) appData.darkMode = true;
-    if (!appData.categories || !Array.isArray(appData.categories)) appData.categories = ["Mặc định", "Công việc", "Giải trí", "Cá nhân"];
-    if (!appData.categories.includes("Mặc định")) appData.categories.unshift("Mặc định");
-    if (!appData.bookmarks || !Array.isArray(appData.bookmarks)) appData.bookmarks = [];
-
     let categoryToDelete = null;
     let siteToEditId = null;
 
-    function saveStore() {
-      localStorage.setItem('twtd_store', JSON.stringify(appData));
+    // Lắng nghe dữ liệu thay đổi trên Firebase theo thời gian thực (Realtime Sync)
+    dbRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        appData = data;
+        if (!appData.categories) appData.categories = ["Mặc định"];
+        if (!appData.bookmarks) appData.bookmarks = [];
+        if (appData.darkMode === undefined) appData.darkMode = true;
+      } else {
+        // Lần đầu tiên chạy chưa có dữ liệu trên cloud -> Tạo dữ liệu mẫu
+        saveStore();
+      }
+      document.getElementById('syncStatus').innerText = "🟢 Đã đồng bộ Đám mây (Firebase)";
       render();
+    }, (error) => {
+      document.getElementById('syncStatus').innerText = "🔴 Lỗi kết nối Firebase!";
+      console.error(error);
+    });
+
+    // Hàm lưu dữ liệu lên Firebase
+    function saveStore() {
+      dbRef.set(appData);
     }
 
     function showToast(msg) {
@@ -408,7 +434,7 @@
       const bm = appData.bookmarks.find(b => b.id === id);
       if (bm) { bm.clicks = (bm.clicks || 0) + 1; saveStore(); }
     }
-    /* Export Functions */
+
     function openExportModal() {
       document.getElementById('exportJsonText').value = JSON.stringify(appData, null, 2);
       document.getElementById('exportModal').style.display = 'flex';
@@ -434,7 +460,6 @@
       closeModal('exportModal');
     }
 
-    /* Import Functions */
     function openImportModal() {
       document.getElementById('importJsonText').value = '';
       document.getElementById('importFileInput').value = '';
@@ -475,7 +500,6 @@
     }
 
     function render() {
-      // Dark/Light Theme logic
       if (appData.darkMode) {
         document.documentElement.classList.remove('light-mode');
         document.body.classList.remove('light-mode');
@@ -488,19 +512,16 @@
         document.getElementById('themeText').innerText = 'Light';
       }
 
-      // View Mode Button text/icon
       document.getElementById('viewIcon').innerText = appData.viewMode === 'grid' ? '📱' : '📋';
       document.getElementById('viewText').innerText = appData.viewMode === 'grid' ? 'Grid' : 'List';
 
-      // Load Categories to Select Box
       const catSelect = document.getElementById('siteCatSelect');
-      catSelect.innerHTML = appData.categories.map(c => `<option value="${c}">${c}</option>`).join('');
+      catSelect.innerHTML = (appData.categories || []).map(c => `<option value="${c}">${c}</option>`).join('');
 
-      // Load Categories Tabs
       const catContainer = document.getElementById('categoriesList');
       let catHTML = `<button type="button" class="cat-btn ${appData.activeCategory === 'Tất cả' ? 'active' : ''}" onclick="setCategory('Tất cả')">Tất cả</button>`;
       
-      appData.categories.forEach(c => {
+      (appData.categories || []).forEach(c => {
         const deleteBtn = (c === "Mặc định") ? "" : `<span class="close-cat" onclick="promptDeleteGroup('${c}', event)">✕</span>`;
         catHTML += `
           <button type="button" class="cat-btn ${appData.activeCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">
@@ -510,9 +531,8 @@
       });
       catContainer.innerHTML = catHTML;
 
-      // Filter Bookmarks
       const searchText = document.getElementById('searchInput').value.toLowerCase();
-      let filtered = appData.bookmarks.filter(b => {
+      let filtered = (appData.bookmarks || []).filter(b => {
         const matchesCat = appData.activeCategory === 'Tất cả' || b.category === appData.activeCategory;
         const matchesSearch = (b.name && b.name.toLowerCase().includes(searchText)) || (b.url && b.url.toLowerCase().includes(searchText));
         return matchesCat && matchesSearch;
@@ -524,7 +544,6 @@
         return;
       }
 
-      // RENDER GIAO DIỆN THEO CHẾ ĐỘ (GRID HOẶC LIST)
       if (appData.viewMode === 'grid') {
         let gridHTML = `<div class="items-grid">`;
         filtered.forEach(bm => {
@@ -561,7 +580,6 @@
         gridHTML += `</div>`;
         container.innerHTML = gridHTML;
       } else {
-        // GIAO DIỆN DẠNG LIST (DANH SÁCH DÒNG)
         let listHTML = `<div class="items-list">`;
         filtered.forEach(bm => {
           let domain = "";
@@ -594,8 +612,6 @@
         container.innerHTML = listHTML;
       }
     }
-
-    render();
   </script>
 </body>
 </html>

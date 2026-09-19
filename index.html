@@ -76,44 +76,54 @@
     .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
     .cat-btn .close-cat { opacity: 0.6; font-size: 10px; margin-left: 2px; }
 
+    /* CSS Giao diện GRID */
     .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; width: 100%; }
     .grid-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
-    
     .grid-preview { height: 100px; background: #070a12; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
     .grid-preview img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-    
     .grid-tag { position: absolute; top: 6px; left: 6px; background: rgba(2, 132, 199, 0.85); color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
     .grid-star { position: absolute; top: 6px; right: 6px; font-size: 13px; cursor: pointer; color: #cbd5e1; background: rgba(0,0,0,0.5); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
     .grid-star.active { color: #f59e0b; }
-
     .grid-footer { padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05); gap: 4px; }
     .grid-info { display: flex; align-items: center; gap: 6px; text-decoration: none; color: var(--text-color); overflow: hidden; flex: 1; }
     .grid-icon { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
     .grid-title-box { display: flex; flex-direction: column; overflow: hidden; }
     .grid-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .grid-clicks { font-size: 10px; color: var(--text-muted); }
-
     .grid-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
     .btn-icon-box { background: rgba(255,255,255,0.05); border-radius: 4px; padding: 2px 4px; display: flex; align-items: center; justify-content: center; }
     .btn-icon { cursor: pointer; font-size: 13px; opacity: 0.85; user-select: none; }
     .btn-delete { color: #94a3b8; }
 
+    /* CSS Giao diện LIST (Thắt gọn) */
+    .items-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .list-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .list-left { display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden; text-decoration: none; color: var(--text-color); }
+    .list-star { font-size: 14px; cursor: pointer; color: #cbd5e1; flex-shrink: 0; }
+    .list-star.active { color: #f59e0b; }
+    .list-info { display: flex; flex-direction: column; overflow: hidden; }
+    .list-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .list-sub { font-size: 10px; color: var(--text-muted); display: flex; gap: 8px; }
+
+    /* Modals */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
-    .modal { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; width: 100%; max-width: 340px; padding: 16px; color: var(--text-color); }
+    .modal { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; width: 100%; max-width: 360px; padding: 16px; color: var(--text-color); }
     .modal-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; text-align: center; }
     .modal-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; text-align: center; line-height: 1.4; }
     .modal-textarea { width: 100%; height: 80px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; color: var(--text-color); padding: 8px; font-size: 11px; outline: none; margin-bottom: 10px; resize: none; }
-    .modal-footer { display: flex; justify-content: center; gap: 8px; }
+    .modal-footer { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
 
-    .btn-modal-cancel { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text-color); font-size: 11px; cursor: pointer; }
-    .btn-modal-danger { padding: 6px 14px; border-radius: 6px; border: none; background: #f43f5e; color: white; font-size: 11px; cursor: pointer; font-weight: 600; }
+    .btn-modal-cancel { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text-color); font-size: 11px; cursor: pointer; }
+    .btn-modal-danger { padding: 6px 12px; border-radius: 6px; border: none; background: #f43f5e; color: white; font-size: 11px; cursor: pointer; font-weight: 600; }
+
+    .file-input-box { width: 100%; padding: 8px; border: 1px dashed var(--card-border); border-radius: 6px; margin-bottom: 10px; background: var(--input-bg); text-align: center; font-size: 11px; }
 
     #toast { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 2000; white-space: nowrap; }
   </style>
 </head>
 <body>
 
-  <div id="toast">Đã sao chép liên kết!</div>
+  <div id="toast">Thông báo</div>
 
   <div class="header">
     <h1>Trang Web Thường Dùng</h1>
@@ -186,11 +196,12 @@
   <div id="exportModal" class="modal-overlay">
     <div class="modal">
       <div class="modal-title">Sao lưu dữ liệu (Export)</div>
-      <div class="modal-sub">Sao chép chuỗi mã JSON bên dưới để cất giữ:</div>
+      <div class="modal-sub">Tải file về máy hoặc sao chép mã bên dưới:</div>
       <textarea id="exportJsonText" class="modal-textarea" readonly></textarea>
       <div class="modal-footer">
         <button type="button" class="btn-modal-cancel" onclick="closeModal('exportModal')">Đóng</button>
-        <button type="button" class="btn-action" onclick="copyExportJson()">📋 Sao chép</button>
+        <button type="button" class="btn-action" onclick="downloadExportJson()">💾 Tải File JSON</button>
+        <button type="button" class="btn-action" onclick="copyExportJson()">📋 Copy Mã</button>
       </div>
     </div>
   </div>
@@ -199,8 +210,14 @@
   <div id="importModal" class="modal-overlay">
     <div class="modal">
       <div class="modal-title">Khôi phục dữ liệu (Import)</div>
-      <div class="modal-sub">Dán chuỗi JSON khôi phục vào đây:</div>
-      <textarea id="importJsonText" class="modal-textarea" placeholder="Dán mã JSON..."></textarea>
+      <div class="modal-sub">Chọn File JSON từ thiết bị hoặc Dán mã JSON:</div>
+      
+      <div class="file-input-box">
+        <input type="file" id="importFileInput" accept=".json" onchange="handleFileSelect(event)">
+      </div>
+      
+      <textarea id="importJsonText" class="modal-textarea" placeholder="Hoặc dán chuỗi JSON vào đây..."></textarea>
+      
       <div class="modal-footer">
         <button type="button" class="btn-modal-cancel" onclick="closeModal('importModal')">Hủy</button>
         <button type="button" class="btn-action" onclick="applyImportJson()">Khôi phục</button>
@@ -209,11 +226,12 @@
   </div>
 
   <script>
+    // Mặc định luôn là darkMode = true
     const defaultData = {
       categories: ["Mặc định", "Công việc", "Giải trí", "Cá nhân"],
       activeCategory: "Tất cả",
       viewMode: "grid",
-      darkMode: false,
+      darkMode: true,
       bookmarks: [
         { id: 1, name: "YouTube", url: "https://youtube.com", category: "Giải trí", clicks: 2, starred: true },
         { id: 2, name: "GitHub", url: "https://github.com", category: "Công việc", clicks: 1, starred: true },
@@ -223,6 +241,7 @@
 
     let stored = localStorage.getItem('twtd_store');
     let appData = defaultData;
+
     if (stored) {
       try {
         let parsed = JSON.parse(stored);
@@ -232,15 +251,10 @@
       } catch(e) {}
     }
 
-    if (!appData.categories || !Array.isArray(appData.categories)) {
-      appData.categories = ["Mặc định", "Công việc", "Giải trí", "Cá nhân"];
-    }
-    if (!appData.categories.includes("Mặc định")) {
-      appData.categories.unshift("Mặc định");
-    }
-    if (!appData.bookmarks || !Array.isArray(appData.bookmarks)) {
-      appData.bookmarks = [];
-    }
+    if (appData.darkMode === undefined) appData.darkMode = true;
+    if (!appData.categories || !Array.isArray(appData.categories)) appData.categories = ["Mặc định", "Công việc", "Giải trí", "Cá nhân"];
+    if (!appData.categories.includes("Mặc định")) appData.categories.unshift("Mặc định");
+    if (!appData.bookmarks || !Array.isArray(appData.bookmarks)) appData.bookmarks = [];
 
     let categoryToDelete = null;
     let siteToEditId = null;
@@ -394,39 +408,65 @@
       const bm = appData.bookmarks.find(b => b.id === id);
       if (bm) { bm.clicks = (bm.clicks || 0) + 1; saveStore(); }
     }
-
+    /* Export Functions */
     function openExportModal() {
       document.getElementById('exportJsonText').value = JSON.stringify(appData, null, 2);
       document.getElementById('exportModal').style.display = 'flex';
-    }
-
-    function openImportModal() {
-      document.getElementById('importJsonText').value = '';
-      document.getElementById('importModal').style.display = 'flex';
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
     }
 
     function copyExportJson() {
       const textarea = document.getElementById('exportJsonText');
       textarea.select();
       document.execCommand('copy');
-      showToast("Đã sao chép mã JSON!");
+      showToast("📋 Đã sao chép mã JSON!");
       closeModal('exportModal');
+    }
+
+    function downloadExportJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `trangweb_backup_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("💾 Đã tải file JSON!");
+      closeModal('exportModal');
+    }
+
+    /* Import Functions */
+    function openImportModal() {
+      document.getElementById('importJsonText').value = '';
+      document.getElementById('importFileInput').value = '';
+      document.getElementById('importModal').style.display = 'flex';
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('importJsonText').value = e.target.result;
+      };
+      reader.readAsText(file);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
     }
 
     function applyImportJson() {
       try {
-        const json = JSON.parse(document.getElementById('importJsonText').value);
+        const text = document.getElementById('importJsonText').value.trim();
+        if (!text) return alert("Vui lòng dán mã hoặc chọn file JSON!");
+        const json = JSON.parse(text);
         if (json.bookmarks && json.categories) {
           appData = json;
           saveStore();
           closeModal('importModal');
           showToast("Khôi phục thành công!");
-        } else { alert("Mã JSON không hợp lệ!"); }
-      } catch (err) { alert("Lỗi cú pháp JSON!"); }
+        } else { alert("Mã JSON không đúng cấu trúc!"); }
+      } catch (err) { alert("Cú pháp JSON không hợp lệ!"); }
     }
 
     function setCategory(cat) {
@@ -435,6 +475,7 @@
     }
 
     function render() {
+      // Dark/Light Theme logic
       if (appData.darkMode) {
         document.documentElement.classList.remove('light-mode');
         document.body.classList.remove('light-mode');
@@ -447,12 +488,15 @@
         document.getElementById('themeText').innerText = 'Light';
       }
 
+      // View Mode Button text/icon
       document.getElementById('viewIcon').innerText = appData.viewMode === 'grid' ? '📱' : '📋';
       document.getElementById('viewText').innerText = appData.viewMode === 'grid' ? 'Grid' : 'List';
 
+      // Load Categories to Select Box
       const catSelect = document.getElementById('siteCatSelect');
       catSelect.innerHTML = appData.categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
+      // Load Categories Tabs
       const catContainer = document.getElementById('categoriesList');
       let catHTML = `<button type="button" class="cat-btn ${appData.activeCategory === 'Tất cả' ? 'active' : ''}" onclick="setCategory('Tất cả')">Tất cả</button>`;
       
@@ -466,10 +510,11 @@
       });
       catContainer.innerHTML = catHTML;
 
+      // Filter Bookmarks
       const searchText = document.getElementById('searchInput').value.toLowerCase();
       let filtered = appData.bookmarks.filter(b => {
         const matchesCat = appData.activeCategory === 'Tất cả' || b.category === appData.activeCategory;
-        const matchesSearch = b.name.toLowerCase().includes(searchText) || b.url.toLowerCase().includes(searchText);
+        const matchesSearch = (b.name && b.name.toLowerCase().includes(searchText)) || (b.url && b.url.toLowerCase().includes(searchText));
         return matchesCat && matchesSearch;
       });
 
@@ -479,40 +524,75 @@
         return;
       }
 
-      let gridHTML = `<div class="items-grid">`;
-      filtered.forEach(bm => {
-        let domain = "";
-        try { domain = new URL(bm.url).hostname; } catch(e) { domain = bm.url; }
-        const previewImg = `https://api.microlink.io/?url=${encodeURIComponent(bm.url)}&screenshot=true&meta=false&embed=screenshot.url`;
+      // RENDER GIAO DIỆN THEO CHẾ ĐỘ (GRID HOẶC LIST)
+      if (appData.viewMode === 'grid') {
+        let gridHTML = `<div class="items-grid">`;
+        filtered.forEach(bm => {
+          let domain = "";
+          try { domain = new URL(bm.url).hostname; } catch(e) { domain = bm.url; }
+          const previewImg = `https://api.microlink.io/?url=${encodeURIComponent(bm.url)}&screenshot=true&meta=false&embed=screenshot.url`;
 
-        gridHTML += `
-          <div class="grid-card">
-            <div class="grid-preview">
-              <span class="grid-tag">${bm.category}</span>
-              <span class="grid-star ${bm.starred ? 'active' : ''}" onclick="toggleStar(${bm.id}, event)" title="Yêu thích">★</span>
-              <img src="${previewImg}" alt="${bm.name}" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x150/1e293b/64748b?text=No+Preview';">
+          gridHTML += `
+            <div class="grid-card">
+              <div class="grid-preview">
+                <span class="grid-tag">${bm.category}</span>
+                <span class="grid-star ${bm.starred ? 'active' : ''}" onclick="toggleStar(${bm.id}, event)" title="Yêu thích">★</span>
+                <img src="${previewImg}" alt="${bm.name}" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x150/1e293b/64748b?text=No+Preview';">
+              </div>
+              <div class="grid-footer">
+                <a href="${bm.url}" target="_blank" class="grid-info" onclick="trackClick(${bm.id})">
+                  <img src="https://www.google.com/s2/favicons?domain=${domain}" class="grid-icon" alt="">
+                  <div class="grid-title-box">
+                    <span class="grid-title">${bm.name}</span>
+                    <span class="grid-clicks">Đã mở: ${bm.clicks || 0} lần</span>
+                  </div>
+                </a>
+                <div class="grid-actions">
+                  <div class="btn-icon-box" title="Sao chép địa chỉ URL" onclick="copyUrl('${bm.url}', event)">
+                    <span class="btn-icon">📋</span>
+                  </div>
+                  <span class="btn-icon" onclick="openEditModal(${bm.id}, event)" title="Chỉnh sửa">✏️</span>
+                  <span class="btn-icon btn-delete" onclick="deleteBookmark(${bm.id}, event)" title="Xóa">✕</span>
+                </div>
+              </div>
             </div>
-            <div class="grid-footer">
-              <a href="${bm.url}" target="_blank" class="grid-info" onclick="trackClick(${bm.id})">
+          `;
+        });
+        gridHTML += `</div>`;
+        container.innerHTML = gridHTML;
+      } else {
+        // GIAO DIỆN DẠNG LIST (DANH SÁCH DÒNG)
+        let listHTML = `<div class="items-list">`;
+        filtered.forEach(bm => {
+          let domain = "";
+          try { domain = new URL(bm.url).hostname; } catch(e) { domain = bm.url; }
+
+          listHTML += `
+            <div class="list-card">
+              <a href="${bm.url}" target="_blank" class="list-left" onclick="trackClick(${bm.id})">
+                <span class="list-star ${bm.starred ? 'active' : ''}" onclick="toggleStar(${bm.id}, event)">★</span>
                 <img src="https://www.google.com/s2/favicons?domain=${domain}" class="grid-icon" alt="">
-                <div class="grid-title-box">
-                  <span class="grid-title">${bm.name}</span>
-                  <span class="grid-clicks">Đã mở: ${bm.clicks || 0} lần</span>
+                <div class="list-info">
+                  <span class="list-title">${bm.name}</span>
+                  <div class="list-sub">
+                    <span>📁 ${bm.category}</span>
+                    <span>• Đã mở: ${bm.clicks || 0}</span>
+                  </div>
                 </div>
               </a>
               <div class="grid-actions">
-                <div class="btn-icon-box" title="Sao chép địa chỉ URL" onclick="copyUrl('${bm.url}', event)">
+                <div class="btn-icon-box" title="Sao chép URL" onclick="copyUrl('${bm.url}', event)">
                   <span class="btn-icon">📋</span>
                 </div>
                 <span class="btn-icon" onclick="openEditModal(${bm.id}, event)" title="Chỉnh sửa">✏️</span>
                 <span class="btn-icon btn-delete" onclick="deleteBookmark(${bm.id}, event)" title="Xóa">✕</span>
               </div>
             </div>
-          </div>
-        `;
-      });
-      gridHTML += `</div>`;
-      container.innerHTML = gridHTML;
+          `;
+        });
+        listHTML += `</div>`;
+        container.innerHTML = listHTML;
+      }
     }
 
     render();

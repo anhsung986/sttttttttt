@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Trang Web Thường Dùng</title>
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: #131b2e;
+      --card-border: #1e293b;
+      --input-bg: #0d1424;
+      --text-color: #e2e8f0;
+      --text-muted: #64748b;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent-blue: #38bdf8;
+      --danger: #f43f5e;
+      --warning: #f59e0b;
+    }
+
+    /* Đảm bảo toàn bộ thẻ html và body ăn theo màu nền chung */
+    html.light-mode, 
+    body.light-mode {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --input-bg: #f1f5f9;
+      --text-color: #0f172a;
+      --text-muted: #64748b;
+      background-color: var(--bg-color) !important;
+      color: var(--text-color) !important;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    
+    html, body { 
+      width: 100%; 
+      min-height: 100vh;
+      overflow-x: hidden; 
+      background-color: var(--bg-color); 
+      color: var(--text-color); 
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    body { 
+      padding: 12px; 
+      max-width: 900px; 
+      margin: 0 auto; 
+    }
+
+    /* Header */
+    .header { text-align: center; margin-bottom: 12px; }
+    .header h1 { color: #6366f1; font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+    .header p { color: var(--text-muted); font-size: 11px; }
+
+    /* Search & Toolbar */
+    .search-box { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); margin-bottom: 10px; font-size: 13px; outline: none; }
+    .toolbar { display: flex; gap: 6px; margin-bottom: 12px; }
+    .btn-tool { flex: 1; padding: 8px 4px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; }
+
+    /* Forms Setup */
+    .forms-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+
+    .card-form { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 10px; width: 100%; }
+    .card-title { font-size: 11px; font-weight: 700; color: var(--accent-blue); margin-bottom: 8px; text-transform: uppercase; }
+
+    .form-row { display: flex; flex-wrap: wrap; gap: 6px; position: relative; width: 100%; }
+    .input-ctrl { flex: 1 1 120px; min-width: 0; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text-color); font-size: 12px; outline: none; }
+    .select-ctrl { flex: 1 1 100px; min-width: 0; padding: 8px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text-color); font-size: 12px; outline: none; }
+
+    .btn-action { padding: 8px 14px; border-radius: 6px; border: none; background: var(--primary); color: white; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .btn-action:hover { background: var(--primary-hover); }
+
+    .validation-tooltip { display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: #ffffff; color: #000; padding: 6px 10px; border-radius: 4px; font-size: 11px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; border-left: 4px solid #f97316; }
+
+    /* Categories Tabs */
+    .categories { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; -webkit-overflow-scrolling: touch; }
+    .categories::-webkit-scrollbar { display: none; }
+    .cat-btn { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-muted); font-size: 12px; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .cat-btn .close-cat { opacity: 0.6; font-size: 10px; margin-left: 2px; }
+
+    /* Grid Display */
+    .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; width: 100%; }
+    .grid-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+    
+    .grid-preview { height: 100px; background: #070a12; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .grid-preview img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    
+    .grid-tag { position: absolute; top: 6px; left: 6px; background: rgba(2, 132, 199, 0.85); color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+    .grid-star { position: absolute; top: 6px; right: 6px; font-size: 13px; cursor: pointer; color: #cbd5e1; background: rgba(0,0,0,0.5); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .grid-star.active { color: #f59e0b; }
+
+    .grid-footer { padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.05); gap: 4px; }
+    .grid-info { display: flex; align-items: center; gap: 6px; text-decoration: none; color: var(--text-color); overflow: hidden; flex: 1; }
+    .grid-icon { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+    .grid-title-box { display: flex; flex-direction: column; overflow: hidden; }
+    .grid-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .grid-clicks { font-size: 10px; color: var(--text-muted); }
+
+    /* Action Buttons */
+    .grid-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+    .btn-icon-box { background: rgba(255,255,255,0.05); border-radius: 4px; padding: 2px 4px; display: flex; align-items: center; justify-content: center; }
+    .btn-icon { cursor: pointer; font-size: 13px; opacity: 0.85; user-select: none; }
+    .btn-delete { color: #94a3b8; }
+
+    /* Modals */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
+    .modal { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; width: 100%; max-width: 340px; padding: 16px; color: var(--text-color); }
+    .modal-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; text-align: center; }
+    .modal-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; text-align: center; line-height: 1.4; }
+    .modal-textarea { width: 100%; height: 80px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; color: var(--text-color); padding: 8px; font-size: 11px; outline: none; margin-bottom: 10px; resize: none; }
+    .modal-footer { display: flex; justify-content: center; gap: 8px; }
+
+    .btn-modal-cancel { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--card-border); background: var(--input-bg); color: var(--text-color); font-size: 11px; cursor: pointer; }
+    .btn-modal-danger { padding: 6px 14px; border-radius: 6px; border: none; background: #f43f5e; color: white; font-size: 11px; cursor: pointer; font-weight: 600; }
+
+    /* Toast Notification */
+    #toast { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 2000; white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+  <div id="toast">Đã sao chép liên kết!</div>
+
+  <div class="header">
+    <h1>Trang Web Thường Dùng</h1>
+    <p>Quản lý, ghim và sắp xếp các liên kết yêu thích một cách thông minh</p>
+  </div>
+
+  <input type="text" id="searchInput" class="search-box" placeholder="🔍 Tìm kiếm trang web..." oninput="render()">
+
+  <div class="toolbar">
+    <button type="button" class="btn-tool" onclick="toggleView()"><span id="viewIcon">📱</span> <span id="viewText">Grid</span></button>
+    <button type="button" class="btn-tool" onclick="toggleTheme()"><span id="themeIcon">🌙</span> <span id="themeText">Dark</span></button>
+    <button type="button" class="btn-tool" onclick="openExportModal()">📥 Export</button>
+    <button type="button" class="btn-tool" onclick="openImportModal()">📤 Import</button>
+  </div>
+
+  <div class="forms-container">
+    <div class="card-form">
+      <div class="card-title">1. Tạo nhóm mới</div>
+      <div class="form-row">
+        <input type="text" id="groupInput" class="input-ctrl" placeholder="Tên nhóm...">
+        <button type="button" class="btn-action" onclick="addGroup()">Tạo</button>
+        <div id="groupTooltip" class="validation-tooltip">⚠️ Vui lòng điền vào trường này.</div>
+      </div>
+    </div>
+
+    <div class="card-form">
+      <div class="card-title">2. Thêm trang web</div>
+      <div class="form-row">
+        <input type="text" id="siteNameInput" class="input-ctrl" placeholder="Tên web...">
+        <input type="text" id="siteUrlInput" class="input-ctrl" placeholder="Địa chỉ URL...">
+        <select id="siteCatSelect" class="select-ctrl"></select>
+        <button type="button" class="btn-action" onclick="addBookmark()">Thêm Web</button>
+        <div id="siteTooltip" class="validation-tooltip">⚠️ Vui lòng điền vào trường này.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="categoriesList" class="categories"></div>
+  <div id="contentContainer"></div>
+
+  <!-- Modal Xác nhận Xóa nhóm -->
+  <div id="deleteGroupModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-title">Xác nhận xóa</div>
+      <div id="deleteGroupText" class="modal-sub">Bạn có chắc muốn xóa nhóm này? Các trang web sẽ chuyển sang "Mặc định".</div>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" onclick="closeModal('deleteGroupModal')">Hủy</button>
+        <button type="button" id="btnConfirmDeleteGroup" class="btn-modal-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Chỉnh sửa Web -->
+  <div id="editSiteModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-title">Chỉnh sửa trang web</div>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+        <input type="text" id="editNameInput" class="input-ctrl" placeholder="Tên trang web">
+        <input type="text" id="editUrlInput" class="input-ctrl" placeholder="Địa chỉ URL">
+        <select id="editCatSelect" class="select-ctrl" style="width:100%"></select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" onclick="closeModal('editSiteModal')">Hủy</button>
+        <button type="button" id="btnSaveEditSite" class="btn-action">Lưu lại</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Export -->
+  <div id="exportModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-title">Sao lưu dữ liệu (Export)</div>
+      <div class="modal-sub">Sao chép chuỗi mã JSON bên dưới để cất giữ:</div>
+      <textarea id="exportJsonText" class="modal-textarea" readonly></textarea>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" onclick="closeModal('exportModal')">Đóng</button>
+        <button type="button" class="btn-action" onclick="copyExportJson()">📋 Sao chép</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Import -->
+  <div id="importModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-title">Khôi phục dữ liệu (Import)</div>
+      <div class="modal-sub">Dán chuỗi JSON khôi phục vào đây:</div>
+      <textarea id="importJsonText" class="modal-textarea" placeholder="Dán mã JSON..."></textarea>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" onclick="closeModal('importModal')">Hủy</button>
+        <button type="button" class="btn-action" onclick="applyImportJson()">Khôi phục</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const defaultData = {
+      categories: ["Mặc định", "Công việc", "Giải trí", "Cá nhân"],
+      activeCategory: "Tất cả",
+      viewMode: "grid",
+      darkMode: false,
+      bookmarks: [
+        { id: 1, name: "YouTube", url: "https://youtube.com", category: "Giải trí", clicks: 2, starred: true },
+        { id: 2, name: "GitHub", url: "https://github.com", category: "Công việc", clicks: 1, starred: true },
+        { id: 3, name: "Google", url: "https://google.com", category: "Mặc định", clicks: 0, starred: true }
+      ]
+    };
+
+    let stored = localStorage.getItem('twtd_store');
+    let appData = defaultData;
+    if (stored) {
+      try {
+        let parsed = JSON.parse(stored);
+        if (parsed.categories && parsed.categories.length > 0) {
+          appData = parsed;
+        }
+      } catch(e) {}
+    }
+
+    if (!appData.categories.includes("Mặc định")) {
+      appData.categories.unshift("Mặc định");
+    }
+
+    let categoryToDelete = null;
+    let siteToEditId = null;
+
+    function saveStore() {
+      localStorage.setItem('twtd_store', JSON.stringify(appData));
+      render();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2000);
+    }
+
+    function copyUrl(url, e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      navigator.clipboard.writeText(url).then(() => {
+        showToast("📋 Đã sao chép địa chỉ web!");
+      }).catch(() => {
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showToast("📋 Đã sao chép địa chỉ web!");
+      });
+    }
+
+    function toggleTheme() {
+      appData.darkMode = !appData.darkMode;
+      saveStore();
+    }
+
+    function toggleView() {
+      appData.viewMode = appData.viewMode === 'list' ? 'grid' : 'list';
+      saveStore();
+    }
+
+    function showTooltip(elementId) {
+      const el = document.getElementById(elementId);
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 2500);
+    }
+
+    function addGroup() {
+      const input = document.getElementById('groupInput');
+      const name = input.value.trim();
+      if (!name) return showTooltip('groupTooltip');
+      if (!appData.categories.includes(name)) {
+        appData.categories.push(name);
+        input.value = '';
+        saveStore();
+      }
+    }
+
+    function promptDeleteGroup(catName, e) {
+      e.stopPropagation();
+      if (catName === "Mặc định") return;
+      categoryToDelete = catName;
+      document.getElementById('deleteGroupText').innerText = `Bạn có chắc muốn xóa nhóm "${catName}"? Các trang web sẽ chuyển sang "Mặc định".`;
+      document.getElementById('deleteGroupModal').style.display = 'flex';
+    }
+
+    document.getElementById('btnConfirmDeleteGroup').onclick = function() {
+      if (categoryToDelete && categoryToDelete !== "Mặc định") {
+        appData.categories = appData.categories.filter(c => c !== categoryToDelete);
+        appData.bookmarks.forEach(b => {
+          if (b.category === categoryToDelete) b.category = "Mặc định";
+        });
+        if (appData.activeCategory === categoryToDelete) appData.activeCategory = "Tất cả";
+        closeModal('deleteGroupModal');
+        saveStore();
+      }
+    };
+
+    function addBookmark() {
+      const nameInput = document.getElementById('siteNameInput');
+      const urlInput = document.getElementById('siteUrlInput');
+      const catSelect = document.getElementById('siteCatSelect');
+
+      const name = nameInput.value.trim();
+      let url = urlInput.value.trim();
+
+      if (!name || !url) return showTooltip('siteTooltip');
+      if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+
+      appData.bookmarks.push({
+        id: Date.now(),
+        name: name,
+        url: url,
+        category: catSelect.value || "Mặc định",
+        clicks: 0,
+        starred: false
+      });
+
+      nameInput.value = '';
+      urlInput.value = '';
+      saveStore();
+    }
+
+    function deleteBookmark(id, e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      appData.bookmarks = appData.bookmarks.filter(b => b.id !== id);
+      saveStore();
+    }
+
+    function openEditModal(id, e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      siteToEditId = id;
+      const bm = appData.bookmarks.find(b => b.id === id);
+      if (!bm) return;
+
+      document.getElementById('editNameInput').value = bm.name;
+      document.getElementById('editUrlInput').value = bm.url;
+      
+      const select = document.getElementById('editCatSelect');
+      select.innerHTML = appData.categories.map(c => `<option value="${c}">${c}</option>`).join('');
+      select.value = bm.category;
+
+      document.getElementById('editSiteModal').style.display = 'flex';
+    }
+
+    document.getElementById('btnSaveEditSite').onclick = function() {
+      const name = document.getElementById('editNameInput').value.trim();
+      let url = document.getElementById('editUrlInput').value.trim();
+      const category = document.getElementById('editCatSelect').value;
+
+      if (!name || !url) return;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+
+      const bm = appData.bookmarks.find(b => b.id === siteToEditId);
+      if (bm) {
+        bm.name = name;
+        bm.url = url;
+        bm.category = category;
+        closeModal('editSiteModal');
+        saveStore();
+      }
+    };
+
+    function toggleStar(id, e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const bm = appData.bookmarks.find(b => b.id === id);
+      if (bm) { bm.starred = !bm.starred; saveStore(); }
+    }
+
+    function trackClick(id) {
+      const bm = appData.bookmarks.find(b => b.id === id);
+      if (bm) { bm.clicks = (bm.clicks || 0) + 1; saveStore(); }
+    }
+
+    function openExportModal() {
+      document.getElementById('exportJsonText').value = JSON.stringify(appData, null, 2);
+      document.getElementById('exportModal').style.display = 'flex';
+    }
+
+    function openImportModal() {
+      document.getElementById('importJsonText').value = '';
+      document.getElementById('importModal').style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function copyExportJson() {
+      const textarea = document.getElementById('exportJsonText');
+      textarea.select();
+      document.execCommand('copy');
+      showToast("Đã sao chép mã JSON!");
+      closeModal('exportModal');
+    }
+
+    function applyImportJson() {
+      try {
+        const json = JSON.parse(document.getElementById('importJsonText').value);
+        if (json.bookmarks && json.categories) {
+          appData = json;
+          saveStore();
+          closeModal('importModal');
+          showToast("Khôi phục thành công!");
+        } else { alert("Mã JSON không hợp lệ!"); }
+      } catch (err) { alert("Lỗi cú pháp JSON!"); }
+    }
+
+    function render() {
+      // Áp dụng class light-mode đồng bộ cả html và body
+      if (appData.darkMode) {
+        document.documentElement.classList.remove('light-mode');
+        document.body.classList.remove('light-mode');
+        document.getElementById('themeIcon').innerText = '🌙';
+        document.getElementById('themeText').innerText = 'Dark';
+      } else {
+        document.documentElement.classList.add('light-mode');
+        document.body.classList.add('light-mode');
+        document.getElementById('themeIcon').innerText = '☀️';
+        document.getElementById('themeText').innerText = 'Light';
+      }
+
+      document.getElementById('viewIcon').innerText = appData.viewMode === 'grid' ? '📱' : '📋';
+      document.getElementById('viewText').innerText = appData.viewMode === 'grid' ? 'Grid' : 'List';
+
+      const catSelect = document.getElementById('siteCatSelect');
+      catSelect.innerHTML = appData.categories.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      const catContainer = document.getElementById('categoriesList');
+      let catHTML = `<button type="button" class="cat-btn ${appData.activeCategory === 'Tất cả' ? 'active' : ''}" onclick="setCategory('Tất cả')">Tất cả</button>`;
+      
+      appData.categories.forEach(c => {
+        const deleteBtn = (c === "Mặc định") ? "" : `<span class="close-cat" onclick="promptDeleteGroup('${c}', event)">✕</span>`;
+        catHTML += `
+          <button type="button" class="cat-btn ${appData.activeCategory === c ? 'active' : ''}" onclick="setCategory('${c}')">
+            ${c} ${deleteBtn}
+          </button>
+        `;
+      });
+      catContainer.innerHTML = catHTML;
+
+      const searchText = document.getElementById('searchInput').value.toLowerCase();
+      let filtered = appData.bookmarks.filter(b => {
+        const matchesCat = appData.activeCategory === 'Tất cả' || b.category === appData.activeCategory;
+        const matchesSearch = b.name.toLowerCase().includes(searchText) || b.url.toLowerCase().includes(searchText);
+        return matchesCat && matchesSearch;
+      });
+
+      const container = document.getElementById('contentContainer');
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:12px;">Trống</div>`;
+        return;
+      }
+
+      let gridHTML = `<div class="items-grid">`;
+      filtered.forEach(bm => {
+        let domain = "";
+        try { domain = new URL(bm.url).hostname; } catch(e) { domain = bm.url; }
+        const previewImg = `https://api.microlink.io/?url=${encodeURIComponent(bm.url)}&screenshot=true&meta=false&embed=screenshot.url`;
+
+        gridHTML += `
+          <div class="grid-card">
+            <div class="grid-preview">
+              <span class="grid-tag">${bm.category}</span>
+              <span class="grid-star ${bm.starred ? 'active' : ''}" onclick="toggleStar(${bm.id}, event)" title="Yêu thích">★</span>
+              <img src="${previewImg}" alt="${bm.name}" loading="lazy" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x150/1e293b/64748b?text=No+Preview';">
+            </div>
+            <div class="grid-footer">
+              <a href="${bm.url}" target="_blank" class="grid-info" onclick="trackClick(${bm.id})">
+                <img src="https://www.google.com/s2/favicons?domain=${domain}" class="grid-icon" alt="">
+                <div class="grid-title-box">
+                  <span class="grid-title">${bm.name}</span>
+                  <span class="grid-clicks">Đã mở: ${bm.clicks || 0} lần</span>
+                </div>
+              </a>
+              <div class="grid-actions">
+                <div class="btn-icon-box" title="Sao chép địa chỉ URL" onclick="copyUrl('${bm.url}', event)">
+                  <span class="btn-icon">📋</span>
+                </div>
+                <span class="btn-icon" onclick="openEditModal(${bm.id}, event)" title="Chỉnh sửa">✏️</span>
+                <span class="btn-icon btn-delete" onclick="deleteBookmark(${bm.id}, event)" title="Xóa">✕</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      gridHTML += `</div>`;
+      container.innerHTML = gridHTML;
+    }
+
+    function setCategory(cat) {
+      appData.activeCategory = cat;
+      saveStore();
+    }
+
+    render();
+  </script>
+</body>
+</html>
